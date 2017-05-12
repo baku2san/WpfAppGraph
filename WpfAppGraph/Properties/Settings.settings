@@ -1,7 +1,21 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WpfAppGraph.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="OpenFilePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UserSelectX" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Radius (mm)</Value>
+    </Setting>
+    <Setting Name="UserSelectY" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Angle (deg)</Value>
+    </Setting>
+    <Setting Name="UserSelectValue" Type="System.String" Scope="User">
+      <Value Profile="(Default)">RA (A) Full</Value>
+    </Setting>
+    <Setting Name="UserSelectPercentage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">95</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

@@ -9,6 +9,9 @@ namespace WpfAppGraph
     static public class Constants
     {
         // TODO: Settingに移行必要
-        public static readonly string InvisiblePrefix = "_";
+        internal static readonly string InvisiblePrefix = "_";
+        internal static string TrackerKeyPlotData = "Raw";
+        internal static double DeltaOfZoneSeries = 0.05;
+        internal static double DeltaOfZoneSeriesStraight = 10.0;
     }
 }

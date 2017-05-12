@@ -12,7 +12,6 @@ namespace WpfAppGraph.Logics
     /// <summary>
     /// Input部分の分離
     /// 課題
-    /// ・Async/Awaitにしたかったけど、BackgroundWorkerとの折り合いをどうすべきか判断できなかったので、workerそのまま利用としている・・
     /// </summary>
     public class CsvFileLogic
     {
@@ -22,16 +21,53 @@ namespace WpfAppGraph.Logics
         public delegate void ProgressChanged(int percentage);
         public ProgressChanged UpdateProgress;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         public async Task<DataTable> ReadCsvFileAsync(FileInfo inputFile)
         {
-            var DataTale = new DataTable();
-            DataTale.Columns.Add("No.", typeof(int));
-            DataTale.Columns.Add("IntRandom", typeof(int));
+            try
+            {
+                if (inputFile.Extension.ToLower() == ".da0")
+                {
+                    var table = await ReadDa0FileAsync(inputFile);
+                    table.TableName = inputFile.Name;
+                    return table;
+                }
+                return await ReadSimpleCsvFileAsync(inputFile);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            finally
+            {
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Progressは非対応とした。
+        /// ・非同期で動かす
+        /// ・100%を何にするか未定
+        /// </summary>
+        /// <param name="inputFile"></param>
+        /// <returns></returns>
+        private async Task<DataTable> ReadDa0FileAsync(FileInfo inputFile)
+        {
+            DataTable dataTable = null;
+
+            using (var stream = File.OpenRead(inputFile.FullName))
+            using (var reader = new StreamReader(stream))
+            {
+                var result = await CsvParser.ReadHeadDataTailAsync(reader);
+                dataTable = result.Item2;
+            }
+            return dataTable;
+        }
+
+        private async Task<DataTable> ReadSimpleCsvFileAsync(FileInfo inputFile)
+        {
+            var dataTable = new DataTable();
+            dataTable.Columns.Add("No.", typeof(int));
+            dataTable.Columns.Add("IntRandom", typeof(int));
 
             // CSVが、'"'　で文字列判断をしなければいけない場合には、以下のParserに切り替えることで簡単に動作可能。その場合、10-20%程度の速度低下有。 
             //using (TextFieldParser tTextParser = new TextFieldParser(tInputFilePath, Encoding.GetEncoding("Shift_JIS"))            ) {
@@ -52,7 +88,7 @@ namespace WpfAppGraph.Logics
 
                     int.TryParse(row[0], out int column1);
                     int.TryParse(row[1], out int column2);
-                    DataTale.Rows.Add(column1, column2);
+                    dataTable.Rows.Add(column1, column2);
 
                     if (LineReadCount % 100 == 0)
                     {
@@ -61,7 +97,7 @@ namespace WpfAppGraph.Logics
                 }
                 this.UpdateProgress(GrossByteSize);
             }
-            return DataTale;
+            return dataTable;
         }
     }
 }

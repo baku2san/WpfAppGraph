@@ -12,5 +12,13 @@ namespace WpfAppGraph
         {
             return System.Text.Encoding.GetEncoding("Shift_JIS").GetByteCount(input);
         }
+        public static Single ParseExNothingIsMinValue(this string input)
+        {
+            if (input == "")
+            {
+                return 0;// Single.MinValue;
+            }
+            return Single.Parse(input);
+        }
     }
 }
