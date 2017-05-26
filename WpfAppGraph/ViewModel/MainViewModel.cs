@@ -502,7 +502,9 @@ namespace WpfAppGraph.ViewModel
             {
                 row[zoneColumnName] = DetectZone(row.Field<Single>("Radius (mm)"), row.Field<Single>("Angle (deg)"));
             }
-            for (var zoneNumber = 1; zoneNumber <= 50; zoneNumber++)
+            // ZoneのPoint数を確認用に。分割予定数を超えたとこが０かも確認。
+            var circleDevision = Constants.MaximumRadius / Constants.ZoneDivideRadius;
+            for (var zoneNumber = 1; zoneNumber <= SumOfAngleDivision(circleDevision) + 1; zoneNumber++)
             {
                 Console.WriteLine("zone " + zoneNumber + " : " + table.AsEnumerable().Count(c => c.Field<int>("_Zone") == zoneNumber));
             }
