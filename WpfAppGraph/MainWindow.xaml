@@ -15,7 +15,8 @@
         Title="MainWindow" Height="507.825" Width="754.045" MinWidth="200" MinHeight="100" Closing="Window_Closing">
     <Window.Resources>
         <local:HalfValueConverter x:Key="HalfValue" />
-        <localBindingSources:PercentageValueProvider x:Key="PercentageSource" />
+        <localBindingSources:ZoneAngleDivisionProvider x:Key="ZoneAngleDivision" />
+        <localBindingSources:ZoneRadiusProvider x:Key="ZoneRadius" />
     </Window.Resources>
     <Window.DataContext>
         <local2:MainViewModel x:Name="mainViewModel" />
@@ -117,7 +118,7 @@
                     <RowDefinition Height="21"/>
                 </Grid.RowDefinitions>
                 <ListBox Grid.Row="0" x:Name="ListBoxColumns" HorizontalAlignment="Left" Width="100" 
-                AllowDrop="True" PreviewMouseLeftButtonDown="ListBoxColumns_PreviewMouseLeftButtonDown" MouseMove="ListBoxColumns_MouseMove" MouseUp="ListBoxColumns_MouseUp"   />
+                        AllowDrop="True" PreviewMouseLeftButtonDown="ListBoxColumns_PreviewMouseLeftButtonDown" MouseMove="ListBoxColumns_MouseMove" MouseUp="ListBoxColumns_MouseUp"   />
                 <Grid Grid.Row="1" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
@@ -158,7 +159,21 @@
                 <Button Grid.Row="2" x:Name="ButtonUpdate" Content="_Update" HorizontalAlignment="Left" Width="100" Height="21" VerticalAlignment="Bottom" Click="ButtonUpdate_Click" />
             </Grid>
             <Grid HorizontalAlignment="Right" Width="100" Margin="0,0,0,21">
-                <ListBox x:Name="ListBoxChartType" Width="100" />
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <ListBox Grid.Row="0" x:Name="ListBoxChartType" Width="100" />
+                <Grid Grid.Row="1" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <ListBox Grid.Row="0" Name="ListBoxZoneRadius" ItemsSource="{Binding Items, Source={StaticResource ZoneRadius}}" ToolTip="Zoneを分割する径長" />
+                    <ListBox Grid.Row="1" Name="ListBoxZoneAngleDivision" ItemsSource="{Binding Items, Source={StaticResource ZoneAngleDivision}}" ToolTip="Zoneの角度分割開始数" />
+                </Grid>
             </Grid>
         </Grid>
         <Button x:Name="buttonReadCsv" Content="_ReadCsv" Click="buttonReadCsv_Click" HorizontalAlignment="Right" Width="113" Height="21" VerticalAlignment="Bottom"/>
