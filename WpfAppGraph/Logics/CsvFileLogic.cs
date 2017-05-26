@@ -11,7 +11,6 @@ namespace WpfAppGraph.Logics
 {
     /// <summary>
     /// Input部分の分離
-    /// 課題
     /// </summary>
     public class CsvFileLogic
     {
@@ -21,7 +20,7 @@ namespace WpfAppGraph.Logics
         public delegate void ProgressChanged(int percentage);
         public ProgressChanged UpdateProgress;
 
-        public async Task<DataTable> ReadCsvFileAsync(FileInfo inputFile)
+        public async Task<DataTable> ReadFileAsync(FileInfo inputFile)
         {
             try
             {
@@ -31,7 +30,7 @@ namespace WpfAppGraph.Logics
                     table.TableName = inputFile.Name;
                     return table;
                 }
-                return await ReadSimpleCsvFileAsync(inputFile);
+                return null;
             }
             catch (Exception ex)
             {

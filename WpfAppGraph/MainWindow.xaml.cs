@@ -82,7 +82,7 @@ namespace WpfAppGraph
             var csvInputter = new CsvFileLogic();
             csvInputter.UpdateProgress += worker.ReportProgress;
             
-            e.Result = csvInputter.ReadCsvFileAsync(csvFile).Result;
+            e.Result = csvInputter.ReadFileAsync(csvFile).Result;
         }
 
         private void backGroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)

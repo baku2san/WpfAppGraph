@@ -104,12 +104,12 @@ namespace WpfAppGraph.ViewModel
                 TrackerKey = Constants.TrackerKeyPlotData,
             });
             // Zone描画：TODO：初期から表示しておいて、最前面に常に置けるようであればそのほうが高速化にはなるはず。その場合、上の Clear()も考慮必要
-            var circleDevision = 4;
+            var circleDevision = Constants.MaximumRadius / Constants.ZoneDivideRadius;
             for (var circle = 1; circle < circleDevision; circle++)
             {
                 // 同心円描画
                 model.Series.Add(new FunctionSeries(
-                    r => 25 * circle,
+                    r => Constants.ZoneDivideRadius * circle,
                     r => r * Math.PI,
                     0,
                     2,
@@ -120,8 +120,8 @@ namespace WpfAppGraph.ViewModel
                 // 放射線描画
                 Enumerable.Range(1, ConvertToAngleDivision(circle)).ToList().ForEach(f => model.Series.Add(new FunctionSeries(
                     r => (Math.PI * 2 / ConvertToAngleDivision(circle)) * f,
-                    25 * circle,
-                    25 * (circle + 1),
+                    Constants.ZoneDivideRadius * circle,
+                    Constants.ZoneDivideRadius * (circle + 1),
                     Constants.DeltaOfZoneSeriesStraight
                     )
                 {
@@ -133,9 +133,9 @@ namespace WpfAppGraph.ViewModel
                 }));
                 // Zone番号描画：放射線に付属させると、LineLegendPosition.Start/Endの選択だった為に、位置合わせのため、ずらして表示
                 Enumerable.Range(1, ConvertToAngleDivision(circle)).ToList().ForEach(f => model.Series.Add(new FunctionSeries(
-                r => (Math.PI * 2 / ConvertToAngleDivision(circle)) * (f - 0.5),
-                    25 * circle + (25 / 2),
-                    25 * circle + (25 / 2),
+                    r => (Math.PI * 2 / ConvertToAngleDivision(circle)) * (f - Constants.ZoneDisplayAngleShift),
+                    Constants.ZoneDivideRadius * circle + (Constants.ZoneDivideRadius * Constants.ZoneDisplayRadiusShift),
+                    Constants.ZoneDivideRadius * circle + (Constants.ZoneDivideRadius * Constants.ZoneDisplayRadiusShift),
                     Constants.DeltaOfZoneSeriesStraight
                     )
                 {
@@ -147,9 +147,9 @@ namespace WpfAppGraph.ViewModel
                     FontWeight = OxyPlot.FontWeights.Bold,
                 }));
             }
+            // Zone 01(中心) の描画
             model.Series.Add(new FunctionSeries(r => 1, 0, 1, 0.1)
             {
-
                 Title = "01",
                 RenderInLegend = false,
                 LineLegendPosition = LineLegendPosition.End,
@@ -445,25 +445,41 @@ namespace WpfAppGraph.ViewModel
                     var targetColumnName = selectedItems.Item3;
                     var targetRangeUpperPercentage = selectedItems.Item4;   // 昇順にし、この％の位置にある値を取得する。100%=最大値（0,100は非選択としてあるが）
                     var targetRangeUpper = targetRangeUpperPercentage / 100;
+                    var targetRangeLower = 1 - targetRangeUpper;
                     currentModel = this.ZoneComparisonModel;
-                    var candleItemSource = table.AsEnumerable().GroupBy(g => g.Field<int>("_Zone")).Select(s => new HighLowItem(
+                    var boxPlotItemSource = table.AsEnumerable().GroupBy(g => g.Field<int>("_Zone")).Select(s => new BoxPlotItem(
                         s.Key,
-                        s.Max(a => a.Field<Single>(targetColumnName)),
                         s.Min(a => a.Field<Single>(targetColumnName)),
-                        s.Average(a => a.Field<Single>(targetColumnName)),
-                        s.OrderBy(a=> a.Field<Single>(targetColumnName)).Skip((int)((Single)s.Count() * targetRangeUpper)).First().Field<Single>(targetColumnName)
-                        )).OrderBy(o => o.X);
+                        s.OrderBy(a => a.Field<Single>(targetColumnName)).Skip((int)((Single)s.Count() * targetRangeLower)).First().Field<Single>(targetColumnName),
+                        s.OrderBy(a => a.Field<Single>(targetColumnName)).Skip((int)((Single)s.Count() * 0.5)).First().Field<Single>(targetColumnName),
+                        s.OrderBy(a => a.Field<Single>(targetColumnName)).Skip((int)((Single)s.Count() * targetRangeUpper)).First().Field<Single>(targetColumnName),
+                        s.Max(a => a.Field<Single>(targetColumnName))
+                        )
+                        {
+                            Mean = s.Average(a => a.Field<Single>(targetColumnName)),
+                        }
+                        ).OrderBy(o => o.X);
+                    // TODO : 計算量はやばいので減らすべく考える必要あり
+                    //      http://stackoverflow.com/questions/4140719/calculate-median-in-c-sharp
 
                     currentModel.Series.Clear();  // TODO 一本だけで良いはずだけど、差分等の対応時にはなにがしか必要かも
-                    currentModel.Series.Add(new CandleStickSeries()
+                    currentModel.Series.Add(new BoxPlotSeries()
                     {
-                        ItemsSource = candleItemSource,
-                        DataFieldX = "Zone",
-                        DataFieldHigh = "Max",
-                        DataFieldLow = "Min",
-                        DataFieldOpen = "Average",
-                        DataFieldClose = targetRangeUpperPercentage + "%",
-                        TrackerFormatString = "{0}\n{1}: {2}\nMax: {3:0.###}\n" + targetRangeUpperPercentage + "%: {6:0.###}\nAverage: {5:0.###}\nMin: {4:0.###}",
+                        ItemsSource = boxPlotItemSource,
+                        BoxWidth = 0.3,
+                        StrokeThickness = 1,
+                        MedianThickness = 2,
+                        MeanThickness = 2,
+                        //OutlierSize = 2,                    // outlier : 外れ値。必要になったらこの辺りも表示かな
+                        //OutlierType = MarkerType.Circle,
+                        MedianPointSize = 2,
+                        MeanPointSize = 2,
+                        WhiskerWidth = 0.5,
+                        LineStyle = LineStyle.Solid,
+                        ShowBox = true,
+                        ShowMedianAsDot = false,
+                        ShowMeanAsDot = false,
+                    //TrackerFormatString = "{0}\n{1}: {2}\nMax: {3:0.###}\n" + targetRangeUpperPercentage + "%: {6:0.###}\nAverage: {5:0.###}\nMin: {4:0.###}",
                     });
                     // TODO : 自動で良いと思うが一応後で調査するかも
                     //currentModel.GetAxisOrDefault("Y", null).Minimum = candleItemSource.Min(m => m.Low);
@@ -486,10 +502,10 @@ namespace WpfAppGraph.ViewModel
             {
                 row[zoneColumnName] = DetectZone(row.Field<Single>("Radius (mm)"), row.Field<Single>("Angle (deg)"));
             }
-            //for (var zoneNumber = 1; zoneNumber < 23; zoneNumber++)
-            //{
-            //    Console.WriteLine("zone " + zoneNumber + " : " + dataTable.AsEnumerable().Count(c => c.Field<int>("_Zone") == zoneNumber));
-            //}
+            for (var zoneNumber = 1; zoneNumber <= 50; zoneNumber++)
+            {
+                Console.WriteLine("zone " + zoneNumber + " : " + table.AsEnumerable().Count(c => c.Field<int>("_Zone") == zoneNumber));
+            }
         }
         private int ConvertToAngleDivision(int circleNumber) {
             switch (circleNumber)
@@ -497,7 +513,7 @@ namespace WpfAppGraph.ViewModel
                 case 0:
                     return 1;
                 default:
-                    return (int)Math.Pow(2, circleNumber - 1) * 3;
+                    return (int)Math.Pow(2, circleNumber - 1) * Constants.ZoneFirstAngleDivision;
             }
         }
         private int SumOfAngleDivision(int circleNumber)
@@ -506,33 +522,19 @@ namespace WpfAppGraph.ViewModel
         }
         private int DetectZone(Single radius, Single angle)
         {
-            if (radius < 25)
+            var dividedR = (int)(radius / Constants.ZoneDivideRadius);  // 0,1,2,3
+                                                                        // 1,3,6,12,24
+            int zone = 0;
+            if (dividedR == 0)
             {
-                return 1;
-            }
-            else if (radius < 50)
-            {
-                if (angle < 120)
-                {
-                    return 2;
-                }
-                else if (angle < 240)
-                {
-                    return 3;
-                }
-                else
-                {
-                    return 4;
-                }
-            }
-            else if (radius < 75)
-            {
-                return (int)angle / 60 + 5;
+                zone = 1;
             }
             else
             {
-                return (int)angle / 30 + 11;
+                var k = (int)(Constants.ZoneFirstAngleDivision * (Math.Pow(2, dividedR - 1)));
+                zone = (int)(angle / (360 / ((double)k))) + k + 2 - Constants.ZoneFirstAngleDivision;
             }
+            return zone;
         }
     }
 }
