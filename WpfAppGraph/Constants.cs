@@ -16,10 +16,10 @@ namespace WpfAppGraph
 
         internal static int MaximumRadius = 100;            // 最大半径
 
-        internal static double ZoneDisplayAngleShift = 0.5;      // Zone番号表示をする為に、Zone枠線からの角度ずらし量（前後のZoneの中間＝0.5)
-        internal static double ZoneDisplayRadiusShift = 0.5;     // 同上の径版
-        internal static int ZoneDivideRadius = 25;          // 半径の分割長
-        internal static int ZoneFirstAngleDivision= 4;           // 径の最初の分割数
+        internal static double ZoneDisplayAngleShift = 0.5;     // Zone番号表示をする為に、Zone枠線からの角度ずらし量（前後のZoneの中間＝0.5)
+        internal static double ZoneDisplayRadiusShift = 0.5;    // 同上の径版
+        internal static int ZoneDivideRadius = 25;              // 半径の分割長
+        internal static int ZoneFirstAngleDivision= 3;          // 径の最初の分割数
         internal static int ZoneFirstDivideAngle = 360 / ZoneFirstAngleDivision;     // 径の最初の分割角度
     }
 }

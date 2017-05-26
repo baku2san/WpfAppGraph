@@ -507,31 +507,31 @@ namespace WpfAppGraph.ViewModel
                 Console.WriteLine("zone " + zoneNumber + " : " + table.AsEnumerable().Count(c => c.Field<int>("_Zone") == zoneNumber));
             }
         }
+        private int SumOfAngleDivision(int circleNumber)
+        {
+            return Enumerable.Range(0, circleNumber).Select(s => ConvertToAngleDivision(s)).Sum();
+        }
         private int ConvertToAngleDivision(int circleNumber) {
             switch (circleNumber)
             {
                 case 0:
                     return 1;
                 default:
-                    return (int)Math.Pow(2, circleNumber - 1) * Constants.ZoneFirstAngleDivision;
+                    return (int)(Math.Pow(2, circleNumber - 1) * Constants.ZoneFirstAngleDivision);
             }
-        }
-        private int SumOfAngleDivision(int circleNumber)
-        {
-            return Enumerable.Range(0, circleNumber).Select(s => ConvertToAngleDivision(s)).Sum();
         }
         private int DetectZone(Single radius, Single angle)
         {
-            var dividedR = (int)(radius / Constants.ZoneDivideRadius);  // 0,1,2,3
+            var circleNumber = (int)(radius / Constants.ZoneDivideRadius);  // 0,1,2,3
                                                                         // 1,3,6,12,24
             int zone = 0;
-            if (dividedR == 0)
+            if (circleNumber == 0)
             {
                 zone = 1;
             }
             else
             {
-                var k = (int)(Constants.ZoneFirstAngleDivision * (Math.Pow(2, dividedR - 1)));
+                var k = (int)(Math.Pow(2, circleNumber - 1) * Constants.ZoneFirstAngleDivision);
                 zone = (int)(angle / (360 / ((double)k))) + k + 2 - Constants.ZoneFirstAngleDivision;
             }
             return zone;
