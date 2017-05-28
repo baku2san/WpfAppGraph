@@ -14,7 +14,7 @@
     <Setting Name="UserSelectValue" Type="System.String" Scope="User">
       <Value Profile="(Default)">RA (A) Full</Value>
     </Setting>
-    <Setting Name="UserSelectPercentage" Type="System.String" Scope="User">
+    <Setting Name="UserSelectPercentage" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">95</Value>
     </Setting>
   </Settings>
