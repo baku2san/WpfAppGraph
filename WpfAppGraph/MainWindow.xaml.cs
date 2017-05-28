@@ -29,7 +29,6 @@ namespace WpfAppGraph
     /// </summary>
     public partial class MainWindow : Window
     {
-
         private readonly BackgroundWorker bgWorker = new BackgroundWorker();
         private readonly OpenFileDialog openFile = new OpenFileDialog()
         {
@@ -40,7 +39,7 @@ namespace WpfAppGraph
         private MainViewModel.ChartType _chartType = MainViewModel.ChartType.PolarScatter;
         private static readonly TraceSource trace = new TraceSource("MainWindow");  // INFO: level 設定することでFiltering可能 by 2nd argument
 
-
+        // KM : https://spin.atomicobject.com/2013/12/11/wpf-data-binding-debug/ でXAML-Debug
         public MainWindow()
         {
             InitializeComponent();
@@ -177,6 +176,11 @@ namespace WpfAppGraph
         private void ZoneIsVisible_Unchecked(object sender, RoutedEventArgs e)
         {
             mainViewModel.UpdateZone(false);
+        }
+
+        private void ButtonUpdateZone_Click(object sender, RoutedEventArgs e)
+        {
+            mainViewModel.UpdateZoneInformation();
         }
     }
 }

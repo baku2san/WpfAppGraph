@@ -8,6 +8,7 @@
         xmlns:local="clr-namespace:WpfAppGraph"
         xmlns:local2="clr-namespace:WpfAppGraph.ViewModel"
         xmlns:localb="clr-namespace:WpfAppGraph.Behaviors"
+        xmlns:localDiag="clr-namespace:WpfAppGraph.Diagnosis"
         xmlns:localBindingSources="clr-namespace:WpfAppGraph.BindingSources"
         xmlns:Properties="clr-namespace:WpfAppGraph.Properties" x:Class="WpfAppGraph.MainWindow"
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
@@ -15,6 +16,7 @@
     <Window.Resources>
         <local:HalfValueConverter x:Key="HalfValue" />
         <localBindingSources:ZoneAngleDivisionProvider x:Key="ZoneAngleDivision" />
+        <localBindingSources:RadiusProvider x:Key="Radius" />
         <localBindingSources:ZoneRadiusProvider x:Key="ZoneRadius" />
     </Window.Resources>
     <Window.DataContext>
@@ -152,19 +154,41 @@
             </Grid>
             <Grid HorizontalAlignment="Right" Width="100" Margin="0,0,0,21">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="3*"/>
                     <RowDefinition Height="1*"/>
-                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <ListBox Grid.Row="0" x:Name="ListBoxChartType" Width="100" />
                 <Grid Grid.Row="1" >
+                    <Grid.Resources>
+                        <localDiag:DebugDataBindingConverter x:Key="DebugBinding"/>
+                    </Grid.Resources>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
-                    <ListBox Grid.Row="0" Name="ListBoxZoneRadius" ItemsSource="{Binding Items, Source={StaticResource ZoneRadius}}" ToolTip="Zoneを分割する径長" />
-                    <ListBox Grid.Row="1" Name="ListBoxZoneAngleDivision" ItemsSource="{Binding Items, Source={StaticResource ZoneAngleDivision}}" ToolTip="Zoneの角度分割開始数" />
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="8*"/>
+                        <ColumnDefinition Width="7*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Row="0" Grid.Column="1" Name="ListBoxRadius" ItemsSource="{Binding Items, Source={StaticResource Radius}, Mode=OneWay}" ToolTip="ウェハー半径"
+                            SelectedIndex="{Binding Source={x:Static Properties:Settings.Default}, Path=Radius, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DebugBinding}}" HorizontalContentAlignment="Right" 
+                            IsSynchronizedWithCurrentItem="True">
+                    </ComboBox>
+                    <Label Grid.Row="0" Grid.Column="0" Content="最大半径" FontSize="9"></Label>
+                    <ComboBox Grid.Row="1" Grid.Column="1" Name="ListBoxZoneRadius" ItemsSource="{Binding Items, Source={StaticResource ZoneRadius}, Mode=OneWay}" ToolTip="Zoneを分割する径長"
+                            SelectedIndex="{Binding Source={x:Static Properties:Settings.Default}, Path=ZoneRadius, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right" 
+                            IsSynchronizedWithCurrentItem="True">
+                    </ComboBox>
+                    <Label Grid.Row="1" Grid.Column="0" Content="分割径長" FontSize="9"></Label>
+                    <ComboBox Grid.Row="2" Grid.Column="1" Name="ListBoxZoneAngleDivision" ItemsSource="{Binding Items, Source={StaticResource ZoneAngleDivision}, Mode=OneTime}" ToolTip="Zoneの角度分割開始数"
+                            SelectedIndex="{Binding Source={x:Static Properties:Settings.Default}, Path=ZoneAngleDivision, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right" 
+                            IsSynchronizedWithCurrentItem="True">
+                    </ComboBox>
+                    <Label Grid.Row="2" Grid.Column="0" Content="初分割数" FontSize="9"></Label>
+                    <Button Grid.Row="3" x:Name="ButtonUpdateZone" Content="Update_Zone" Height="21" VerticalAlignment="Bottom" Click="ButtonUpdateZone_Click" Grid.ColumnSpan="2" />
                 </Grid>
             </Grid>
         </Grid>

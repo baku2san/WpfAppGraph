@@ -11,6 +11,7 @@ using System.Data;
 using Prism.Mvvm;
 using System.Diagnostics;
 using System.Windows;
+using WpfAppGraph.BindingSources;
 
 namespace WpfAppGraph.ViewModel
 {
@@ -21,6 +22,7 @@ namespace WpfAppGraph.ViewModel
         public MainViewModel()
 
         {
+            this.ZoneInfo = new ZoneInformation();
             this.DataTables = new List<DataTable>();
             this.CurrentTableIndex = 0;
             this.PolarScatterModel = InitialPolarScatterModel();
@@ -46,6 +48,8 @@ namespace WpfAppGraph.ViewModel
             this.ScatterModel = InitialScatterModel("Scatter");
             this.PolarTypeModel = InitialPolarTypeModel("polarType");
         }
+
+        private ZoneInformation ZoneInfo { get; set; }
 
         public string Title { get; private set; }
         public IList<DataPoint> Points { get; set; }
@@ -103,13 +107,20 @@ namespace WpfAppGraph.ViewModel
             {
                 TrackerKey = Constants.TrackerKeyPlotData,
             });
+            AddZoneSeries(model);
+            return model;
+
+        }
+        private void AddZoneSeries(PlotModel model)
+        {
+            // TODO : Zone設定更新時の描画更新
             // Zone描画：TODO：初期から表示しておいて、最前面に常に置けるようであればそのほうが高速化にはなるはず。その場合、上の Clear()も考慮必要
-            var circleDevision = Constants.MaximumRadius / Constants.ZoneDivideRadius;
+            var circleDevision = this.ZoneInfo.Radius / this.ZoneInfo.ZoneRadius;
             for (var circle = 1; circle < circleDevision; circle++)
             {
                 // 同心円描画
                 model.Series.Add(new FunctionSeries(
-                    r => Constants.ZoneDivideRadius * circle,
+                    r => this.ZoneInfo.ZoneRadius * circle,
                     r => r * Math.PI,
                     0,
                     2,
@@ -120,8 +131,8 @@ namespace WpfAppGraph.ViewModel
                 // 放射線描画
                 Enumerable.Range(1, ConvertToAngleDivision(circle)).ToList().ForEach(f => model.Series.Add(new FunctionSeries(
                     r => (Math.PI * 2 / ConvertToAngleDivision(circle)) * f,
-                    Constants.ZoneDivideRadius * circle,
-                    Constants.ZoneDivideRadius * (circle + 1),
+                    this.ZoneInfo.ZoneRadius * circle,
+                    this.ZoneInfo.ZoneRadius * (circle + 1),
                     Constants.DeltaOfZoneSeriesStraight
                     )
                 {
@@ -134,8 +145,8 @@ namespace WpfAppGraph.ViewModel
                 // Zone番号描画：放射線に付属させると、LineLegendPosition.Start/Endの選択だった為に、位置合わせのため、ずらして表示
                 Enumerable.Range(1, ConvertToAngleDivision(circle)).ToList().ForEach(f => model.Series.Add(new FunctionSeries(
                     r => (Math.PI * 2 / ConvertToAngleDivision(circle)) * (f - Constants.ZoneDisplayAngleShift),
-                    Constants.ZoneDivideRadius * circle + (Constants.ZoneDivideRadius * Constants.ZoneDisplayRadiusShift),
-                    Constants.ZoneDivideRadius * circle + (Constants.ZoneDivideRadius * Constants.ZoneDisplayRadiusShift),
+                    this.ZoneInfo.ZoneRadius * circle + (this.ZoneInfo.ZoneRadius * Constants.ZoneDisplayRadiusShift),
+                    this.ZoneInfo.ZoneRadius * circle + (this.ZoneInfo.ZoneRadius * Constants.ZoneDisplayRadiusShift),
                     Constants.DeltaOfZoneSeriesStraight
                     )
                 {
@@ -156,8 +167,6 @@ namespace WpfAppGraph.ViewModel
                 TextColor = model.DefaultColors[0],
                 FontWeight = OxyPlot.FontWeights.Bold,
             });
-            return model;
-
         }
         private PlotModel InitialPolarTypeModel(string title = null)
         {
@@ -408,17 +417,9 @@ namespace WpfAppGraph.ViewModel
             }
             return;
         }
-        // TODO: 結構重いので、Modelを分けて、Form上で一括で IsVisible の変更をしたいところ。その場合、描画領域の追従方法（円の中心とサイズ）を検討必要
-        public void UpdateZone(bool isVisible)
-        {
-            if (this.DataTables.Count == 0) { return; }
-            var table = this.DataTables[this.CurrentTableIndex];
-            var currentModel = this.PolarScatterModel;
-            currentModel.Series.Where(w => w.TrackerKey != Constants.TrackerKeyPlotData).ToList().ForEach(f => f.IsVisible = isVisible);
-            currentModel.InvalidatePlot(true);
-        }
         public void UpdateModel(Tuple<string, string, string, double> selectedItems, ChartType chartType)
         {
+
             // TODO : tuple（選択Column)内容が、対象のTable.Columnsに存在しているかの確認が必要
             var table = this.DataTables[this.CurrentTableIndex];
             PlotModel currentModel = null;
@@ -493,6 +494,42 @@ namespace WpfAppGraph.ViewModel
                     break;
             }
         }
+
+        // KM : settings https://www.codeproject.com/articles/25829/user-settings-applied
+        private class ZoneInformation
+        {
+            public ZoneInformation()
+            {
+                _radius = new RadiusProvider().Items[(int)Properties.Settings.Default["Radius"]];
+                _zoneRadius = new ZoneRadiusProvider().Items[(int)Properties.Settings.Default["ZoneRadius"]];
+                _zoneAngleDivision = new ZoneAngleDivisionProvider().Items[(int)Properties.Settings.Default["ZoneAngleDivision"]];
+            }
+
+            private int _radius;
+            public int Radius { get { return _radius; } }
+            private int _zoneRadius;
+            public int ZoneRadius { get { return _zoneRadius; } }
+            private int _zoneAngleDivision;
+            public int ZoneAngleDivision { get { return _zoneAngleDivision; } }
+        }
+        public void UpdateZoneInformation()
+        {
+            this.ZoneInfo = new ZoneInformation();
+            var currentModel = this.PolarScatterModel;
+            currentModel.Series.Where(w => w.TrackerKey != Constants.TrackerKeyPlotData).ToList().ForEach(f => currentModel.Series.Remove(f));
+            AddZoneSeries(currentModel);
+            currentModel.InvalidatePlot(true);
+        }
+        // TODO: 結構重いので、Modelを分けて、Form上で一括で IsVisible の変更をしたいところ。その場合、描画領域の追従方法（円の中心とサイズ）を検討必要
+        public void UpdateZone(bool isVisible)
+        {
+            if (this.DataTables.Count == 0) { return; }
+            var table = this.DataTables[this.CurrentTableIndex];
+            var currentModel = this.PolarScatterModel;
+            currentModel.Series.Where(w => w.TrackerKey != Constants.TrackerKeyPlotData).ToList().ForEach(f => f.IsVisible = isVisible);
+            currentModel.InvalidatePlot(true);
+        }
+        // TODO : UpdateZoneColumn : wrap して、DataTableに追加したZoneColumnを更新する必要あり。
         public void AddZoneColumn()
         {
             var table = this.DataTables[this.CurrentTableIndex];
@@ -503,10 +540,10 @@ namespace WpfAppGraph.ViewModel
                 row[zoneColumnName] = DetectZone(row.Field<Single>("Radius (mm)"), row.Field<Single>("Angle (deg)"));
             }
             // ZoneのPoint数を確認用に。分割予定数を超えたとこが０かも確認。
-            var circleDevision = Constants.MaximumRadius / Constants.ZoneDivideRadius;
+            var circleDevision = this.ZoneInfo.Radius / this.ZoneInfo.ZoneRadius;
             for (var zoneNumber = 1; zoneNumber <= SumOfAngleDivision(circleDevision) + 1; zoneNumber++)
             {
-                Console.WriteLine("zone " + zoneNumber + " : " + table.AsEnumerable().Count(c => c.Field<int>("_Zone") == zoneNumber));
+                //Console.WriteLine("zone " + zoneNumber + " : " + table.AsEnumerable().Count(c => c.Field<int>("_Zone") == zoneNumber));
             }
         }
         private int SumOfAngleDivision(int circleNumber)
@@ -519,12 +556,12 @@ namespace WpfAppGraph.ViewModel
                 case 0:
                     return 1;
                 default:
-                    return (int)(Math.Pow(2, circleNumber - 1) * Constants.ZoneFirstAngleDivision);
+                    return (int)(Math.Pow(2, circleNumber - 1) * this.ZoneInfo.ZoneAngleDivision);
             }
         }
         private int DetectZone(Single radius, Single angle)
         {
-            var circleNumber = (int)(radius / Constants.ZoneDivideRadius);  // 0,1,2,3
+            var circleNumber = (int)(radius / this.ZoneInfo.ZoneRadius);  // 0,1,2,3
                                                                         // 1,3,6,12,24
             int zone = 0;
             if (circleNumber == 0)
@@ -533,8 +570,8 @@ namespace WpfAppGraph.ViewModel
             }
             else
             {
-                var k = (int)(Math.Pow(2, circleNumber - 1) * Constants.ZoneFirstAngleDivision);
-                zone = (int)(angle / (360 / ((double)k))) + k + 2 - Constants.ZoneFirstAngleDivision;
+                var k = (int)(Math.Pow(2, circleNumber - 1) * this.ZoneInfo.ZoneAngleDivision);
+                zone = (int)(angle / (360 / ((double)k))) + k + 2 - this.ZoneInfo.ZoneAngleDivision;
             }
             return zone;
         }

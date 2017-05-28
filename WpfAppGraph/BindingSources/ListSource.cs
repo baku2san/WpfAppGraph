@@ -16,16 +16,23 @@ namespace WpfAppGraph.BindingSources
     }
     public class ZoneAngleDivisionProvider : ListProviderInt
     {
-        public ZoneAngleDivisionProvider() : base(3, 4)
+        public ZoneAngleDivisionProvider() : base(2, 3, 4, 5)
         {
-            Console.WriteLine(Items);
+            //Console.WriteLine(Items);
         }
     }
     public class ZoneRadiusProvider : ListProviderInt
     {
-        public ZoneRadiusProvider() : base(20,25)
+        public ZoneRadiusProvider() : base(20, 25, 50)  // TODO: DetectZone　で少数の場合の対応を検討必要かもね。余ったところを最外周に含める、とか。現状はRadiusの公約数のみ
         {
-            Console.WriteLine(Items);
+            //Console.WriteLine(Items);
+        }
+    }
+    public class RadiusProvider : ListProviderInt
+    {
+        public RadiusProvider() : base(100, 200)
+        {
+            //Console.WriteLine(Items);
         }
     }
     /// <summary>

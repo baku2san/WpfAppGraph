@@ -74,12 +74,48 @@ namespace WpfAppGraph.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("95")]
-        public string UserSelectPercentage {
+        public int UserSelectPercentage {
             get {
-                return ((string)(this["UserSelectPercentage"]));
+                return ((int)(this["UserSelectPercentage"]));
             }
             set {
                 this["UserSelectPercentage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int Radius {
+            get {
+                return ((int)(this["Radius"]));
+            }
+            set {
+                this["Radius"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int ZoneRadius {
+            get {
+                return ((int)(this["ZoneRadius"]));
+            }
+            set {
+                this["ZoneRadius"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int ZoneAngleDivision {
+            get {
+                return ((int)(this["ZoneAngleDivision"]));
+            }
+            set {
+                this["ZoneAngleDivision"] = value;
             }
         }
     }
