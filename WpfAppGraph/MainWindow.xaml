@@ -133,16 +133,10 @@
                     <Label Grid.Row="0" Grid.Column="1" x:Name="TextBox1st"   
                            Content="{Binding Source={x:Static Properties:Settings.Default}, Path=UserSelectX, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                            AllowDrop="True" DragOver="label_DragOver" Drop="label_Drop" Padding="5,2"  >
-                        <Label.DataContext>
-                            <Properties:Settings/>
-                        </Label.DataContext>
                     </Label>
                     <Label Grid.Row="1" Grid.Column="1" x:Name="TextBox2nd" 
                            Content="{Binding Source={x:Static Properties:Settings.Default}, Path=UserSelectY, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                            AllowDrop="True" DragOver="label_DragOver" Drop="label_Drop" Padding="5,2"  >
-                        <Label.DataContext>
-                            <Properties:Settings/>
-                        </Label.DataContext>
                     </Label>
                     <Label Grid.Row="2" Grid.Column="1" x:Name="TextBox3rd"
                            Content="{Binding Source={x:Static Properties:Settings.Default}, Path=UserSelectValue, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
@@ -152,9 +146,6 @@
                     <Slider Grid.Column="1" Name="SliderPercentage" Minimum="1" Maximum="99" 
                             Value="{Binding Source={x:Static Properties:Settings.Default}, Path=UserSelectPercentage, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                             SmallChange="1.0" Grid.Row="3" Opacity="0.9"  TickFrequency="1" IsSnapToTickEnabled="True" >
-                        <Slider.DataContext>
-                            <Properties:Settings/>
-                        </Slider.DataContext>
                     </Slider>
                 </Grid>
                 <Button Grid.Row="2" x:Name="ButtonUpdate" Content="_Update" HorizontalAlignment="Left" Width="100" Height="21" VerticalAlignment="Bottom" Click="ButtonUpdate_Click" />
