@@ -2,7 +2,6 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:oxy="http://oxyplot.org/wpf"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
@@ -11,7 +10,7 @@
         xmlns:localb="clr-namespace:WpfAppGraph.Behaviors"
         xmlns:localBindingSources="clr-namespace:WpfAppGraph.BindingSources"
         xmlns:Properties="clr-namespace:WpfAppGraph.Properties" x:Class="WpfAppGraph.MainWindow"
-        mc:Ignorable="d"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         Title="MainWindow" Height="507.825" Width="754.045" MinWidth="200" MinHeight="100" Closing="Window_Closing">
     <Window.Resources>
         <local:HalfValueConverter x:Key="HalfValue" />
@@ -131,14 +130,15 @@
                         <!--とりあえず、0にして左側に説明追記は後で考える-->
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Grid.Column="1" x:Name="TextBox1st"   Content="{Binding UserSelectX}" 
-                    AllowDrop="True" DragOver="label_DragOver" Drop="label_Drop" Padding="5,2"  >
+                    <Label Grid.Row="0" Grid.Column="1" x:Name="TextBox1st"   
+                           Content="{Binding Source={x:Static Properties:Settings.Default}, Path=UserSelectX, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                           AllowDrop="True" DragOver="label_DragOver" Drop="label_Drop" Padding="5,2"  >
                         <Label.DataContext>
                             <Properties:Settings/>
                         </Label.DataContext>
                     </Label>
                     <Label Grid.Row="1" Grid.Column="1" x:Name="TextBox2nd" 
-                           Content="{Binding Path=Default.UserSelectY, Mode=TwoWay}"
+                           Content="{Binding Source={x:Static Properties:Settings.Default}, Path=UserSelectY, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                            AllowDrop="True" DragOver="label_DragOver" Drop="label_Drop" Padding="5,2"  >
                         <Label.DataContext>
                             <Properties:Settings/>
@@ -150,7 +150,8 @@
                     </Label>
                     <Label Grid.Row="3" Grid.Column="1" x:Name="TextBox4th" Content="{Binding ElementName=SliderPercentage, Path=Value}" ContentStringFormat="{}{0}%" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom"  />
                     <Slider Grid.Column="1" Name="SliderPercentage" Minimum="1" Maximum="99" 
-                            Value="{Binding Path=UserSelectPercentage, Mode=TwoWay}" SmallChange="1.0" Grid.Row="3" Opacity="0.9"  TickFrequency="1" IsSnapToTickEnabled="True" >
+                            Value="{Binding Source={x:Static Properties:Settings.Default}, Path=UserSelectPercentage, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                            SmallChange="1.0" Grid.Row="3" Opacity="0.9"  TickFrequency="1" IsSnapToTickEnabled="True" >
                         <Slider.DataContext>
                             <Properties:Settings/>
                         </Slider.DataContext>
