@@ -484,8 +484,8 @@ namespace WpfAppGraph.ViewModel
                     });
                     currentModel.GetAxisOrDefault("Y", null).Minimum = boxPlotItemSource.Min(m => m.LowerWhisker);
                     currentModel.GetAxisOrDefault("Y", null).Maximum = boxPlotItemSource.Max(m => m.UpperWhisker);
-                    currentModel.GetAxisOrDefault("X", null).Minimum = 1;
-                    currentModel.GetAxisOrDefault("X", null).Maximum = boxPlotItemSource.Count();
+                    currentModel.GetAxisOrDefault("X", null).Minimum = 0;
+                    currentModel.GetAxisOrDefault("X", null).Maximum = boxPlotItemSource.Count() + 1;
                     currentModel.InvalidatePlot(true);
                     return;
 
