@@ -7,7 +7,6 @@
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:local="clr-namespace:WpfAppGraph"
         xmlns:local2="clr-namespace:WpfAppGraph.ViewModel"
-        xmlns:localb="clr-namespace:WpfAppGraph.Behaviors"
         xmlns:localDiag="clr-namespace:WpfAppGraph.Diagnosis"
         xmlns:localBindingSources="clr-namespace:WpfAppGraph.BindingSources"
         xmlns:Properties="clr-namespace:WpfAppGraph.Properties" x:Class="WpfAppGraph.MainWindow"
