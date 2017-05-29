@@ -482,11 +482,10 @@ namespace WpfAppGraph.ViewModel
                         ShowMeanAsDot = false,
                     //TrackerFormatString = "{0}\n{1}: {2}\nMax: {3:0.###}\n" + targetRangeUpperPercentage + "%: {6:0.###}\nAverage: {5:0.###}\nMin: {4:0.###}",
                     });
-                    // TODO : 自動で良いと思うが一応後で調査するかも
-                    //currentModel.GetAxisOrDefault("Y", null).Minimum = candleItemSource.Min(m => m.Low);
-                    //currentModel.GetAxisOrDefault("Y", null).Maximum = candleItemSource.Max(m => m.High);
-                    //currentModel.GetAxisOrDefault("X", null).Minimum = 1;
-                    //currentModel.GetAxisOrDefault("X", null).Maximum = candleItemSource.Count();
+                    currentModel.GetAxisOrDefault("Y", null).Minimum = boxPlotItemSource.Min(m => m.LowerWhisker);
+                    currentModel.GetAxisOrDefault("Y", null).Maximum = boxPlotItemSource.Max(m => m.UpperWhisker);
+                    currentModel.GetAxisOrDefault("X", null).Minimum = 1;
+                    currentModel.GetAxisOrDefault("X", null).Maximum = boxPlotItemSource.Count();
                     currentModel.InvalidatePlot(true);
                     return;
 
