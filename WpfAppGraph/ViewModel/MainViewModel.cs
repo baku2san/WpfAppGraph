@@ -89,8 +89,8 @@ namespace WpfAppGraph.ViewModel
             {
                 MajorGridlineStyle = LineStyle.Solid,
                 MinorGridlineStyle = LineStyle.Solid,
-                Minimum = 0,
-                Maximum = 100,
+                //Minimum = 0,
+                //Maximum = 100,
             });
             model.Axes.Add(new LinearColorAxis()      // TODO Slot毎に上下限が変わるので色の変化も変えたほうが良いと思う
             {
