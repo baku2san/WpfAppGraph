@@ -500,9 +500,9 @@ namespace WpfAppGraph.ViewModel
         {
             public ZoneInformation()
             {
-                _radius = new RadiusProvider().Items[(int)Properties.Settings.Default["Radius"]];
-                _zoneRadius = new ZoneRadiusProvider().Items[(int)Properties.Settings.Default["ZoneRadius"]];
-                _zoneAngleDivision = new ZoneAngleDivisionProvider().Items[(int)Properties.Settings.Default["ZoneAngleDivision"]];
+                _radius = new RadiusProvider().GetItem((int)Properties.Settings.Default["Radius"]);
+                _zoneRadius = new ZoneRadiusProvider().GetItem((int)Properties.Settings.Default["ZoneRadius"]);
+                _zoneAngleDivision = new ZoneAngleDivisionProvider().GetItem((int)Properties.Settings.Default["ZoneAngleDivision"]);
             }
 
             private int _radius;

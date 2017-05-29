@@ -45,6 +45,11 @@ namespace WpfAppGraph.BindingSources
         {
             Items = items.ToList();
         }
+        public int GetItem(int index)
+        {
+            var _index = (this.Items.Count > index) ? index: this.Items.Count - 1;  // Defaultは最大。最小でもいいけど
+            return this.Items[_index];
+        }
     }
     public class ListProvider<T>
     {
