@@ -44,7 +44,6 @@ namespace WpfAppGraph.ViewModel
             this.PieModel2 = InitialPieModel(null,1300);
             this.CandleModel = InitialCandleModel("candle");
 
-            this.FunctionModel = InitialFunctionModel("func");
             this.ScatterModel = InitialScatterModel("Scatter");
             this.PolarTypeModel = InitialPolarTypeModel("polarType");
         }
@@ -57,7 +56,6 @@ namespace WpfAppGraph.ViewModel
         public PlotModel PieModel { get; set; }
         public PlotModel PieModel2 { get; set; }
         public PlotModel CandleModel { get; set; }
-        public PlotModel FunctionModel { get; set; }
         public PlotModel ScatterModel { get; set; }
         public PlotModel PolarTypeModel { get; set; }
         public PlotModel PolarScatterModel { get; set; }
@@ -257,27 +255,6 @@ namespace WpfAppGraph.ViewModel
             }
 
             model.Series.Add(s2);
-            return model;
-        }
-        private PlotModel InitialFunctionModel(string title = null)
-        {
-            var model = new PlotModel { PlotType = PlotType.XY };
-            var series = new FunctionSeries(
-                t => 2 * Math.Cos(t) - Math.Cos(2 * t), // x座標の関数
-                t => 2 * Math.Sin(t) - Math.Sin(2 * t), // y座標の関数
-                0,                                      // tの最小値
-                2 * Math.PI,                            // tの最大値
-                Math.PI / 32,                           // tの刻み幅
-                "カージオイド");                        // グラフタイトル
-            model.Series.Add(series);
-
-            var series2 = new OxyPlot.Series.FunctionSeries(
-                StandardNormalDistribution,     // 引数double，戻り値doubleの関数
-                -3,                             // x座標の最小値
-                1,                              // x座標の最大値
-                0.01,                           // x座標の刻み幅
-                "標準正規分布");                // グラフタイトル
-            model.Series.Add(series2);
             return model;
         }
         private static double StandardNormalDistribution(double x)
