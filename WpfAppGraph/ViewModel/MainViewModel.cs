@@ -448,7 +448,7 @@ namespace WpfAppGraph.ViewModel
                     var targetRangeUpper = targetRangeUpperPercentage / 100;
                     var targetRangeLower = 1 - targetRangeUpper;
                     currentModel = this.ZoneComparisonModel;
-                    var boxPlotItemSource = table.AsEnumerable().GroupBy(g => g.Field<int>("_Zone")).Select(s => new BoxPlotItem(
+                    var boxPlotItemSource = table.AsEnumerable().GroupBy(g => g.Field<int>(Constants.ColumnName_Zone)).Select(s => new BoxPlotItem(
                         s.Key,
                         s.Min(a => a.Field<Single>(targetColumnName)),
                         s.OrderBy(a => a.Field<Single>(targetColumnName)).Skip((int)((Single)s.Count() * targetRangeLower)).First().Field<Single>(targetColumnName),
@@ -532,7 +532,7 @@ namespace WpfAppGraph.ViewModel
         public void AddZoneColumn()
         {
             var table = this.DataTables[this.CurrentTableIndex];
-            var zoneColumnName = Constants.InvisiblePrefix + "Zone";
+            var zoneColumnName = Constants.ColumnName_Zone;
             var column = table.Columns.Add(zoneColumnName, typeof(int));
             foreach (var row in table.AsEnumerable())
             {
@@ -540,13 +540,13 @@ namespace WpfAppGraph.ViewModel
             }
             // ZoneのPoint数を確認用に。分割予定数を超えたとこが０かも確認。
             var circleDevision = this.ZoneInfo.Radius / this.ZoneInfo.ZoneRadius;
-            if (table.AsEnumerable().Count(c=>c.Field<int>("_Zone") == SumOfAngleDivision(circleDevision) + 1) > 0)
+            if (table.AsEnumerable().Count(c=>c.Field<int>(Constants.ColumnName_Zone) == SumOfAngleDivision(circleDevision) + 1) > 0)
             {
                 throw new Exception("zone exceeds.");
             }
             //for (var zoneNumber = 1; zoneNumber <= SumOfAngleDivision(circleDevision) + 1; zoneNumber++)
             //{
-            //    //Console.WriteLine("zone " + zoneNumber + " : " + table.AsEnumerable().Count(c => c.Field<int>("_Zone") == zoneNumber));
+            //    //Console.WriteLine("zone " + zoneNumber + " : " + table.AsEnumerable().Count(c => c.Field<int>(Constants.ColumnName_Zone) == zoneNumber));
             //}
         }
         private int SumOfAngleDivision(int circleNumber)
