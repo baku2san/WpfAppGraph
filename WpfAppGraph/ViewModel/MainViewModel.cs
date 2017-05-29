@@ -541,10 +541,14 @@ namespace WpfAppGraph.ViewModel
             }
             // ZoneのPoint数を確認用に。分割予定数を超えたとこが０かも確認。
             var circleDevision = this.ZoneInfo.Radius / this.ZoneInfo.ZoneRadius;
-            for (var zoneNumber = 1; zoneNumber <= SumOfAngleDivision(circleDevision) + 1; zoneNumber++)
+            if (table.AsEnumerable().Count(c=>c.Field<int>("_Zone") == SumOfAngleDivision(circleDevision) + 1) > 0)
             {
-                //Console.WriteLine("zone " + zoneNumber + " : " + table.AsEnumerable().Count(c => c.Field<int>("_Zone") == zoneNumber));
+                throw new Exception("zone exceeds.");
             }
+            //for (var zoneNumber = 1; zoneNumber <= SumOfAngleDivision(circleDevision) + 1; zoneNumber++)
+            //{
+            //    //Console.WriteLine("zone " + zoneNumber + " : " + table.AsEnumerable().Count(c => c.Field<int>("_Zone") == zoneNumber));
+            //}
         }
         private int SumOfAngleDivision(int circleNumber)
         {
