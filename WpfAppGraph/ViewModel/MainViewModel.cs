@@ -75,6 +75,7 @@ namespace WpfAppGraph.ViewModel
             model.Axes.Add(
                 new AngleAxis
                 {
+                    Title ="Angle",
                     MajorStep = Math.PI / 4,
                     MinorStep = Math.PI / 16,
                     MajorGridlineStyle = LineStyle.Solid,
@@ -87,6 +88,7 @@ namespace WpfAppGraph.ViewModel
                 });
             model.Axes.Add(new MagnitudeAxis
             {
+                Title = "Magnitude",
                 MajorGridlineStyle = LineStyle.Solid,
                 MinorGridlineStyle = LineStyle.Solid,
                 //Minimum = 0,
