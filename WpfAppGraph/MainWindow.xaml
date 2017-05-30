@@ -98,11 +98,6 @@
                         </Grid>
                     </Grid>
                 </TabItem>
-                <TabItem Margin="0" Header="Line1">
-                    <oxy:Plot Title="{Binding Title}" Margin="0,0,0,0" x:Name="Plot3" >
-                        <oxy:LineSeries ItemsSource="{Binding Points, Mode=OneWay}"/>
-                    </oxy:Plot>
-                </TabItem>
             </TabControl>
             <TextBox x:Name="textBoxInputFilePath" TextWrapping="Wrap" Text="TextBox" Height="21" VerticalAlignment="Bottom" Margin="0,0,347,0"/>
             <ProgressBar x:Name="progressBar" Margin="0,0,118,0" Height="21" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="224"/>

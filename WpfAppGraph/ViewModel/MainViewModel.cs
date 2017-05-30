@@ -15,6 +15,7 @@ using WpfAppGraph.BindingSources;
 
 namespace WpfAppGraph.ViewModel
 {
+    // TODO : 試作用のModelが沢山あるので、最終的に削除必要。same as XAML
 
     public class MainViewModel   // INotifyPropertyChanged の簡易版？
     {
@@ -28,18 +29,6 @@ namespace WpfAppGraph.ViewModel
             this.PolarScatterModel = InitialPolarScatterModel();
             this.ZoneComparisonModel = InitialZoneComparisonModel();
 
-            // TODO 以下はSample用
-            this.Title = "OxyPlot Sample";
-            this.Points = new List<DataPoint>
-                              {
-                                  new DataPoint(0, 4),
-                                  new DataPoint(10, 13),
-                                  new DataPoint(20, 15),
-                                  new DataPoint(30, 16),
-                                  new DataPoint(40, 12),
-                                  new DataPoint(50, 12)
-                              };
-
             this.PieModel = InitialPieModel("pie1");
             this.PieModel2 = InitialPieModel(null,1300);
             this.CandleModel = InitialCandleModel("candle");
@@ -50,8 +39,6 @@ namespace WpfAppGraph.ViewModel
 
         private ZoneInformation ZoneInfo { get; set; }
 
-        public string Title { get; private set; }
-        public IList<DataPoint> Points { get; set; }
         public PlotModel ZoneComparisonModel { get; set; }
         public PlotModel PieModel { get; set; }
         public PlotModel PieModel2 { get; set; }
@@ -439,7 +426,7 @@ namespace WpfAppGraph.ViewModel
                             Mean = s.Average(a => a.Field<Single>(targetColumnName)),
                         }
                         ).OrderBy(o => o.X);
-                    // TODO : 計算量はやばいので減らすべく考える必要あり
+                    // TODO : 計算量がやばそうなので減らすべく考える必要ありかも
                     //      http://stackoverflow.com/questions/4140719/calculate-median-in-c-sharp
 
                     currentModel.Series.Clear();  // TODO 一本だけで良いはずだけど、差分等の対応時にはなにがしか必要かも
