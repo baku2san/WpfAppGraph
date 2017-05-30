@@ -477,7 +477,6 @@ namespace WpfAppGraph.ViewModel
             private int _zoneAngleDivision;
             public int ZoneAngleDivision { get { return _zoneAngleDivision; } }
         }
-        // TODO : 100を25で分割した際に、最大径がおかしい気がするので調査必要。20と表示上限が相違ある為。
         public void UpdateZoneInformation()
         {
             this.ZoneInfo = new ZoneInformation();
