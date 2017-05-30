@@ -120,7 +120,7 @@ namespace WpfAppGraph.ViewModel
                     r => (Math.PI * 2 / ConvertToAngleDivision(circle)) * f,
                     this.ZoneInfo.ZoneRadius * circle,
                     this.ZoneInfo.ZoneRadius * (circle + 1),
-                    Constants.DeltaOfZoneSeriesStraight
+                    this.ZoneInfo.ZoneRadius * Constants.DeltaOfZoneSeriesDeltaRatio
                     )
                 {
                     Color = model.DefaultColors[0],
@@ -134,7 +134,7 @@ namespace WpfAppGraph.ViewModel
                     r => (Math.PI * 2 / ConvertToAngleDivision(circle)) * (f - Constants.ZoneDisplayAngleShift),
                     this.ZoneInfo.ZoneRadius * circle + (this.ZoneInfo.ZoneRadius * Constants.ZoneDisplayRadiusShift),
                     this.ZoneInfo.ZoneRadius * circle + (this.ZoneInfo.ZoneRadius * Constants.ZoneDisplayRadiusShift),
-                    Constants.DeltaOfZoneSeriesStraight
+                    this.ZoneInfo.ZoneRadius * Constants.DeltaOfZoneSeriesDeltaRatio
                     )
                 {
                     //Color = model.DefaultColors[0],

@@ -13,7 +13,7 @@ namespace WpfAppGraph
         internal static readonly string ColumnName_Zone = Constants.InvisiblePrefix + "Zone";
         internal static string TrackerKeyPlotData = "Raw";
         internal static double DeltaOfZoneSeries = 0.05;
-        internal static double DeltaOfZoneSeriesStraight = 10.0;
+        internal static double DeltaOfZoneSeriesDeltaRatio = 0.5;   // Zone描画Delta　Radiusに対する比率で決定
 
         internal static int MaximumRadius = 100;            // 最大半径
 
