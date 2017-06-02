@@ -118,8 +118,8 @@ namespace WpfAppGraph.ViewModel
                 // 放射線描画
                 Enumerable.Range(1, ConvertToAngleDivision(circle)).ToList().ForEach(f => model.Series.Add(new FunctionSeries(
                     r => (Math.PI * 2 / ConvertToAngleDivision(circle)) * f,
-                    this.ZoneInfo.ZoneRadius * circle,
-                    this.ZoneInfo.ZoneRadius * (circle + 1),
+                    this.ZoneInfo.RadiusBegin(circle),
+                    this.ZoneInfo.RadiusEnd(circle),
                     this.ZoneInfo.ZoneRadius * Constants.DeltaOfZoneSeriesDeltaRatio
                     )
                 {
@@ -476,6 +476,33 @@ namespace WpfAppGraph.ViewModel
             public int ZoneRadius { get { return _zoneRadius; } }
             private int _zoneAngleDivision;
             public int ZoneAngleDivision { get { return _zoneAngleDivision; } }
+
+            public int ZoneMaximumCircle { get { return (_radius / _zoneRadius) - 1; } }
+            /// <summary>
+            /// 対象Zone円の開始位置
+            /// </summary>
+            /// <param name="circle"></param>
+            /// <returns></returns>
+            public int RadiusBegin(int circle)
+            {
+                return this.ZoneRadius * circle;
+            }
+            /// <summary>
+            /// 対象Zone円の終了位置
+            /// </summary>
+            /// <param name="circle"></param>
+            /// <returns></returns>
+            public int RadiusEnd(int circle)
+            {
+                if (ZoneMaximumCircle == circle)
+                {
+                    return _radius;
+                }
+                else
+                {
+                    return this.ZoneRadius * (circle + 1);
+                }
+            }
         }
         public void UpdateZoneInformation()
         {
@@ -532,6 +559,10 @@ namespace WpfAppGraph.ViewModel
         {
             var circleNumber = (int)(radius / this.ZoneInfo.ZoneRadius);  // 0,1,2,3
                                                                         // 1,3,6,12,24
+            if(circleNumber > this.ZoneInfo.ZoneMaximumCircle)
+            {
+                circleNumber = this.ZoneInfo.ZoneMaximumCircle;
+            }
             int zone = 0;
             if (circleNumber == 0)
             {
