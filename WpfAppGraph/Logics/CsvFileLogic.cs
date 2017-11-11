@@ -27,7 +27,7 @@ namespace WpfAppGraph.Logics
                 if (inputFile.Extension.ToLower() == ".da0")
                 {
                     var table = await ReadDa0FileAsync(inputFile);
-                    table.TableName = inputFile.Name;
+                    table.TableName = inputFile.FullName;
                     return table;
                 }
                 return null;

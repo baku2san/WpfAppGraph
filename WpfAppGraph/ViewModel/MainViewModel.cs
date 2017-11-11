@@ -368,8 +368,7 @@ namespace WpfAppGraph.ViewModel
             }
             else
             {
-                this.DataTables.Clear();    // TODO : とりあえず、一面更新で動作させる
-                this.CurrentTableIndex = 0;
+                this.CurrentTableIndex = this.DataTables.Count;
                 this.DataTables.Add(table);
                 AddZoneColumn();    // TODO : Zone解析をする際に対応が必要。更新する為に、Calss定義化とか
             }
@@ -393,10 +392,22 @@ namespace WpfAppGraph.ViewModel
             {
                 case ChartType.PolarScatter:
                     currentModel = this.PolarScatterModel;
-                    var polarScatterItemSource = table.AsEnumerable().Select(s => new ScatterPoint(
-                        s.Field<Single>(selectedItems.Item1),
-                        s.Field<Single>(selectedItems.Item2) / 180 * Math.PI, 3,
-                        s.Field<Single>(selectedItems.Item3)));
+                    EnumerableRowCollection<ScatterPoint> polarScatterItemSource;
+                    if (selectedItems.Item3 != Constants.ColumnName_Zone)
+                    {
+                        polarScatterItemSource = table.AsEnumerable().Select(s => new ScatterPoint(
+                            s.Field<Single>(selectedItems.Item1),
+                            s.Field<Single>(selectedItems.Item2) / 180 * Math.PI, 3,
+                            s.Field<Single>(selectedItems.Item3)));
+                    }
+                    else
+                    {
+                        polarScatterItemSource = table.AsEnumerable().Select(s => new ScatterPoint(
+                            s.Field<Single>(selectedItems.Item1),
+                            s.Field<Single>(selectedItems.Item2) / 180 * Math.PI, 3,
+                            s.Field<int>(selectedItems.Item3)));
+
+                    }
                     var rawIndex = currentModel.Series.IndexOf(currentModel.Series.FirstOrDefault(w => w.TrackerKey == Constants.TrackerKeyPlotData));  // TODO 一本だけで良いはずだけど、差分等の対応時にはなにがしか必要かも
                     currentModel.Series[rawIndex] = new ScatterSeries()
                     {
@@ -434,7 +445,7 @@ namespace WpfAppGraph.ViewModel
                     {
                         ItemsSource = boxPlotItemSource,
                         BoxWidth = 0.3,
-                        StrokeThickness = 1,
+                        StrokeThickness = 1.2,
                         MedianThickness = 2,
                         MeanThickness = 2,
                         //OutlierSize = 2,                    // outlier : 外れ値。必要になったらこの辺りも表示かな
